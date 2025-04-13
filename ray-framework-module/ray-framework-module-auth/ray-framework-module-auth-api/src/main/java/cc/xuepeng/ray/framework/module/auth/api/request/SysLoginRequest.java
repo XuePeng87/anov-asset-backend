@@ -47,4 +47,10 @@ public class SysLoginRequest implements Serializable {
     @Length(max = 32, message = "验证码编号长度不能大于32个字符")
     private String uuid;
 
+    /**
+     * 登录IP地址
+     */
+    @Length(max = 32, message = "IP长度不能大于32个字符")
+    private String ip;
+
 }
