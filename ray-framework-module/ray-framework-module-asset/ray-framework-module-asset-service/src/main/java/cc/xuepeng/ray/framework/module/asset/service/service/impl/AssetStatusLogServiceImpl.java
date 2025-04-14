@@ -34,28 +34,6 @@ public class AssetStatusLogServiceImpl
     /**
      * 创建资产状态变更日志
      *
-     * @param assetCode  资产编号
-     * @param statusFrom 原状态
-     * @param statusTo   新状态
-     * @param remark     备注
-     * @return 是否创建成功
-     */
-    @Override
-    @CreateUser
-    public boolean createLog(final String assetCode, final AssetStatus statusFrom, final AssetStatus statusTo, final String remark) {
-        AssetStatusLogDto assetStatusLogDto = new AssetStatusLogDto();
-        assetStatusLogDto.setAssetCode(assetCode);
-        assetStatusLogDto.setStatusFrom(statusFrom);
-        assetStatusLogDto.setStatusTo(statusTo);
-        assetStatusLogDto.setRemark(remark);
-        assetStatusLogDto.setDeleted(false);
-        assetStatusLogDto.setCreateTime(LocalDateTime.now());
-        return create(assetStatusLogDto);
-    }
-
-    /**
-     * 创建资产状态变更日志
-     *
      * @param assetStatusLogDto 资产状态日志的数据传输对象
      * @return 是否创建成功
      */
@@ -94,20 +72,6 @@ public class AssetStatusLogServiceImpl
         final Page<AssetStatusLog> page = PageUtil.createPage(assetStatusLogDto);
         final Page<AssetStatusLog> assetStatusLogs = super.page(page, wrapper);
         return assetStatusLogEntityConverter.entityPageToDtoPage(assetStatusLogs);
-    }
-
-    /**
-     * 根据ID删除状态变更日志
-     *
-     * @param ids 资产状态日志的ID集合
-     * @return 是否删除成功
-     */
-    @Override
-    public boolean deleteByIds(final List<Long> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return Boolean.TRUE;
-        }
-        return super.removeByIds(ids);
     }
 
     /**

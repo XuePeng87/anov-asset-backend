@@ -18,11 +18,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum AssetStatus implements BaseEnum {
 
-    IN_STOCK(0, "禁用"),
+    IN_STOCK(0, "在库"),
 
-    IN_USE(1, "启用"),
+    IN_USE(1, "使用"),
 
-    UNDER_REPAIR(2, "维修 "),
+    UNDER_REPAIR(2, "维修"),
 
     SCRAPPED(3, "报废");
 

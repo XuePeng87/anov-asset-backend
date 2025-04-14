@@ -5,20 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cc.xuepeng</groupId>
-        <artifactId>ray-framework-module</artifactId>
+        <artifactId>ray-framework-module-asset</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>ray-framework-module-asset</artifactId>
-    <name>Ray Framework Module Asset</name>
-    <packaging>pom</packaging>
-
-    <!-- 子模块 -->
-    <modules>
-        <module>ray-framework-module-asset-repository</module>
-        <module>ray-framework-module-asset-service</module>
-        <module>ray-framework-module-asset-api</module>
-    </modules>
+    <artifactId>ray-framework-module-asset-api</artifactId>
+    <name>Ray Framework Module Asset API</name>
 
     <!-- 属性管理 -->
     <properties>
@@ -26,5 +18,19 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <!-- 依赖管理 -->
+    <dependencies>
+        <dependency>
+            <groupId>cc.xuepeng</groupId>
+            <artifactId>ray-framework-module-common-log</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cc.xuepeng</groupId>
+            <artifactId>ray-framework-module-asset-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

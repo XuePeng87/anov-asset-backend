@@ -17,6 +17,11 @@ import lombok.*;
 public class AssetScrapDto extends BaseDto {
 
     /**
+     * 借用编号
+     */
+    private String code;
+
+    /**
      * 设备编号
      */
     private String assetCode;

@@ -21,6 +21,12 @@ import java.time.LocalDate;
 public class AssetRepair extends BizEntity {
 
     /**
+     * 借用编号
+     * 数据库字段：code，har(32)
+     */
+    private String code;
+
+    /**
      * 设备编号
      * 数据库字段：asset_code，char(32)
      */

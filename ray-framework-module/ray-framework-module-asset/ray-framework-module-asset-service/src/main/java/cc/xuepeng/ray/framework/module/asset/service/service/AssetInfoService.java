@@ -40,14 +40,6 @@ public interface AssetInfoService {
     boolean updateStatus(final String code, final AssetStatus status, final String remark);
 
     /**
-     * 根据编号删除资产信息
-     *
-     * @param codes 资产信息的编号集合
-     * @return 是否删除成功
-     */
-    boolean deleteByCodes(final List<String> codes);
-
-    /**
      * 根据编号查询资产信息
      *
      * @param code 资产信息的编号
@@ -62,21 +54,5 @@ public interface AssetInfoService {
      * @return 资产信息的数据传输对象集合
      */
     Page<AssetInfoDto> pageByCondition(final AssetInfoDto assetInfoDto);
-
-    /**
-     * 根据分类编号查询资产信息
-     *
-     * @param categoryCode 分类编号
-     * @return 资产信息的数据传输对象集合
-     */
-    List<AssetInfoDto> findByCategoryCode(final String categoryCode);
-
-    /**
-     * 根据资产状态查询资产信息
-     *
-     * @param status 资产状态
-     * @return 资产信息的数据传输对象集合
-     */
-    List<AssetInfoDto> findByStatus(final AssetStatus status);
 
 }

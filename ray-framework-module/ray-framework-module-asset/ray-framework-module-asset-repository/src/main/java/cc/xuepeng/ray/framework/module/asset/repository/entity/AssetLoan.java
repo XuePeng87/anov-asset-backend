@@ -20,6 +20,12 @@ import java.time.LocalDate;
 public class AssetLoan extends BizEntity {
 
     /**
+     * 借用编号
+     * 数据库字段：code，har(32)
+     */
+    private String code;
+
+    /**
      * 借用日期
      * 数据库字段：loan_date，date
      */

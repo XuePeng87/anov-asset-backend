@@ -1,13 +1,11 @@
-package cc.xuepeng.ray.framework.module.asset.service.dto;
+package cc.xuepeng.ray.framework.module.asset.api.response;
 
-import cc.xuepeng.ray.framework.core.common.domain.dto.BaseDto;
+import cc.xuepeng.ray.framework.core.common.domain.response.BaseResponse;
 import cc.xuepeng.ray.framework.module.asset.repository.enums.AssetLoanStatus;
 import lombok.*;
 
-import java.time.LocalDate;
-
 /**
- * 资产借用的数据传输对象
+ * 资产借用的响应类
  *
  * @author xuepeng
  */
@@ -16,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AssetLoanDto extends BaseDto {
+public class AssetLoanResponse extends BaseResponse {
 
     /**
      * 借用编号
@@ -24,22 +22,22 @@ public class AssetLoanDto extends BaseDto {
     private String code;
 
     /**
-     * 借用日期
-     */
-    private LocalDate loanDate;
-
-    /**
-     * 资产编号
+     * 设备编号
      */
     private String assetCode;
 
     /**
-     * 借用人编号
+     * 设备名称
      */
-    private String userCode;
+    private String assetName;
 
     /**
-     * 状态：0=借用；1=归还
+     * 借用原因
+     */
+    private String reason;
+
+    /**
+     * 状态：0=通过；1=驳回
      */
     private AssetLoanStatus status;
 

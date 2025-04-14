@@ -1,5 +1,6 @@
 package cc.xuepeng.ray.framework.module.asset.service.service.impl;
 
+import cc.xuepeng.ray.framework.core.common.util.RandomUtil;
 import cc.xuepeng.ray.framework.core.mybatis.consts.QueryConst;
 import cc.xuepeng.ray.framework.core.mybatis.util.PageUtil;
 import cc.xuepeng.ray.framework.core.mybatis.util.QueryWrapperUtil;
@@ -8,6 +9,7 @@ import cc.xuepeng.ray.framework.module.asset.repository.enums.AssetStatus;
 import cc.xuepeng.ray.framework.module.asset.repository.repository.AssetInfoRepository;
 import cc.xuepeng.ray.framework.module.asset.service.converter.AssetInfoEntityConverter;
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetInfoDto;
+import cc.xuepeng.ray.framework.module.asset.service.dto.AssetStatusLogDto;
 import cc.xuepeng.ray.framework.module.asset.service.exception.AssetInfoNotFoundException;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetInfoService;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetStatusLogService;
@@ -18,13 +20,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-
-import java.util.List;
 
 /**
  * 资产信息的业务处理实现类
@@ -47,6 +46,7 @@ public class AssetInfoServiceImpl
     public boolean create(final AssetInfoDto assetInfoDto) {
         // 设置初始状态为在库
         assetInfoDto.setStatus(AssetStatus.IN_STOCK);
+        assetInfoDto.setCode(RandomUtil.get32UUID());
         final AssetInfo assetInfo = assetInfoEntityConverter.dtoToEntity(assetInfoDto);
         return super.save(assetInfo);
     }
@@ -71,14 +71,12 @@ public class AssetInfoServiceImpl
         // 如果状态发生变更，则记录状态变更日志
         if (assetInfoDto.getStatus() != null &&
                 !assetInfoDto.getStatus().equals(originalAssetInfo.getStatus())) {
-            assetStatusLogService.createLog(
-                    code,
-                    originalAssetInfo.getStatus(),
-                    assetInfoDto.getStatus(),
-                    assetInfoDto.getRemark()
-            );
+            final AssetStatusLogDto assetStatusLogDto = new AssetStatusLogDto();
+            assetStatusLogDto.setAssetCode(code);
+            assetStatusLogDto.setStatusFrom(originalAssetInfo.getStatus());
+            assetStatusLogDto.setStatusTo(assetInfoDto.getStatus());
+            assetStatusLogService.create(assetStatusLogDto);
         }
-
         final AssetInfo assetInfo = assetInfoEntityConverter.dtoToEntity(assetInfoDto);
         final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper(code);
         return super.update(assetInfo, wrapper);
@@ -106,33 +104,16 @@ public class AssetInfoServiceImpl
             return true;
         }
         // 记录状态变更日志
-        assetStatusLogService.createLog(
-                code,
-                originalAssetInfo.getStatus(),
-                status,
-                remark
-        );
+        final AssetStatusLogDto assetStatusLogDto = new AssetStatusLogDto();
+        assetStatusLogDto.setAssetCode(code);
+        assetStatusLogDto.setStatusFrom(originalAssetInfo.getStatus());
+        assetStatusLogDto.setStatusTo(status);
+        assetStatusLogService.create(assetStatusLogDto);
         // 更新资产状态
         final AssetInfo assetInfo = new AssetInfo();
         assetInfo.setStatus(status);
         final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper(code);
         return super.update(assetInfo, wrapper);
-    }
-
-    /**
-     * 根据编号删除资产信息
-     *
-     * @param codes 资产信息的编号集合
-     * @return 是否删除成功
-     */
-    @Override
-    public boolean deleteByCodes(final List<String> codes) {
-        if (CollectionUtils.isEmpty(codes)) {
-            return Boolean.TRUE;
-        }
-        final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper();
-        wrapper.lambda().in(AssetInfo::getCode, codes);
-        return super.remove(wrapper);
     }
 
     /**
@@ -162,34 +143,6 @@ public class AssetInfoServiceImpl
         final Page<AssetInfo> page = PageUtil.createPage(assetInfoDto);
         final Page<AssetInfo> assetInfos = super.page(page, wrapper);
         return assetInfoEntityConverter.entityPageToDtoPage(assetInfos);
-    }
-
-    /**
-     * 根据分类编号查询资产信息
-     *
-     * @param categoryCode 分类编号
-     * @return 资产信息的数据传输对象集合
-     */
-    @Override
-    public List<AssetInfoDto> findByCategoryCode(final String categoryCode) {
-        final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper();
-        wrapper.lambda().eq(AssetInfo::getCategoryCode, categoryCode);
-        final List<AssetInfo> assetInfos = super.list(wrapper);
-        return assetInfoEntityConverter.entityListToDtoList(assetInfos);
-    }
-
-    /**
-     * 根据资产状态查询资产信息
-     *
-     * @param status 资产状态
-     * @return 资产信息的数据传输对象集合
-     */
-    @Override
-    public List<AssetInfoDto> findByStatus(final AssetStatus status) {
-        final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper();
-        wrapper.lambda().eq(AssetInfo::getStatus, status);
-        final List<AssetInfo> assetInfos = super.list(wrapper);
-        return assetInfoEntityConverter.entityListToDtoList(assetInfos);
     }
 
     /**
@@ -239,8 +192,7 @@ public class AssetInfoServiceImpl
         lambda.like(StringUtils.isNotBlank(assetInfo.getBrand()), AssetInfo::getBrand, assetInfo.getBrand());
         lambda.like(StringUtils.isNotBlank(assetInfo.getModel()), AssetInfo::getModel, assetInfo.getModel());
         lambda.eq(StringUtils.isNotBlank(assetInfo.getCategoryCode()), AssetInfo::getCategoryCode, assetInfo.getCategoryCode());
-        lambda.eq(assetInfo.getStatus() != null, AssetInfo::getStatus, assetInfo.getStatus());
-
+        lambda.eq(ObjectUtils.isNotEmpty(assetInfo.getStatus()), AssetInfo::getStatus, assetInfo.getStatus());
         // 默认按编号排序
         lambda.orderByAsc(AssetInfo::getCode);
         return wrapper;

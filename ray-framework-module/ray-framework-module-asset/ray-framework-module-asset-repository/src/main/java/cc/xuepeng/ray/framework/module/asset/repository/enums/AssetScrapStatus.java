@@ -18,9 +18,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum AssetScrapStatus implements BaseEnum {
 
-    APPROVED(0, "通过"),
+    SCRAPPED(0, "已报废"),
 
-    REJECTED(1, "驳回");
+    CANCELLED(1, "取消报废");
 
     /**
      * 查找枚举
