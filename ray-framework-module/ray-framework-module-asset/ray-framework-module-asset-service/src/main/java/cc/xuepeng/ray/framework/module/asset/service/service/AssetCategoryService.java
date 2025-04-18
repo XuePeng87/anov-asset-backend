@@ -4,6 +4,7 @@ import cc.xuepeng.ray.framework.module.asset.service.dto.AssetCategoryDto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资产分类的业务处理接口
@@ -58,4 +59,12 @@ public interface AssetCategoryService {
      * @return 资产分类的数据传输对象集合
      */
     List<AssetCategoryDto> findAll();
+
+    /**
+     * 查询所有资产分类并转换成Map结构
+     *
+     * @return 资产分类的数据传输对象Map
+     */
+    Map<String, String> findAllToMap();
+
 }

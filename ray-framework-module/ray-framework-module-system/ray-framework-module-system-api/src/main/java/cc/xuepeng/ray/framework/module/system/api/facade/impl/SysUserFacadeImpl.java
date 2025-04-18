@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * 系统功能的业务处理门面实现类
  *
@@ -33,7 +35,7 @@ public class SysUserFacadeImpl implements SysUserFacade {
     /**
      * 修改系统用户
      *
-     * @param code         系统用户的编号
+     * @param code           系统用户的编号
      * @param sysUserRequest 系统用户的请求对象
      * @return 是否修改成功
      */
@@ -74,6 +76,17 @@ public class SysUserFacadeImpl implements SysUserFacade {
         final SysUserDto sysUserDto = sysUserDtoConverter.requestToDto(sysUserRequest);
         final Page<SysUserDto> sysUserDtos = sysUserService.pageByCondition(sysUserDto);
         return sysUserDtoConverter.dtoPageToResponsePage(sysUserDtos);
+    }
+
+    /**
+     * 查询全部系统用户
+     *
+     * @return 系统用户的响应对象
+     */
+    @Override
+    public List<SysUserResponse> findAll() {
+        final List<SysUserDto> sysUserDtos = sysUserService.listByCondition(new SysUserDto());
+        return sysUserDtoConverter.dtoListToResponseList(sysUserDtos);
     }
 
     /**

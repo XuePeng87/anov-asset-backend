@@ -65,13 +65,13 @@ public class AssetRepairServiceImpl
      * 完成维修
      *
      * @param code   维修记录编号
-     * @param remark 备注
+     * @param result 维修结果
      * @return 是否完成维修
      */
     @Override
     @ModifyUser
     @Transactional(rollbackFor = Exception.class)
-    public boolean completeRepair(final String code, final String remark) {
+    public boolean completeRepair(final String code, final String result) {
         // 查询原始数据
         final AssetRepair originalAssetRepair = this.getByCode(code);
         if (ObjectUtils.isEmpty(originalAssetRepair)) {
@@ -80,14 +80,14 @@ public class AssetRepairServiceImpl
         // 更新维修记录状态
         final AssetRepair assetRepair = new AssetRepair();
         assetRepair.setStatus(AssetRepairStatus.COMPLETED);
-        assetRepair.setRemark(remark);
+        assetRepair.setResult(result);
         final QueryWrapper<AssetRepair> wrapper = this.createQueryWrapper(code);
-        boolean result = super.update(assetRepair, wrapper);
+        boolean ret = super.update(assetRepair, wrapper);
         // 更新资产状态为在库
-        if (result) {
+        if (ret) {
             assetInfoService.updateStatus(originalAssetRepair.getAssetCode(), AssetStatus.IN_STOCK, "维修完成");
         }
-        return result;
+        return ret;
     }
 
     /**

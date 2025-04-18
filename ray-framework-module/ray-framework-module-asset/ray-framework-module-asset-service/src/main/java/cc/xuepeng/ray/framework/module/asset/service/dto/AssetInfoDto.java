@@ -22,6 +22,11 @@ public class AssetInfoDto extends BaseDto {
     private String categoryCode;
 
     /**
+     * 资产类别名称
+     */
+    private String categoryName;
+
+    /**
      * 编号
      */
     private String code;

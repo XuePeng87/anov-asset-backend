@@ -26,6 +26,11 @@ public class AssetCategoryResponse extends BaseResponse {
     private String name;
 
     /**
+     * 排序
+     */
+    private Integer sequence;
+
+    /**
      * 备注
      */
     private String remark;

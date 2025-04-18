@@ -20,6 +20,10 @@ import org.hibernate.validator.constraints.Length;
 @EqualsAndHashCode(callSuper = true)
 public class AssetLoanRequest extends BaseRequest implements RequestValidateScope {
 
+    @NotBlank(message = "借用人编号不能为空", groups = {create.class, update.class})
+    @Length(max = 32, message = "借用人编号长度不能大于32个字符", groups = {create.class, update.class, page.class})
+    private String userCode;
+
     /**
      * 设备编号
      */

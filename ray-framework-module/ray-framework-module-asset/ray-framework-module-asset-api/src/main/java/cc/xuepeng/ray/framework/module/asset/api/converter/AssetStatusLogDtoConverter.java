@@ -1,6 +1,7 @@
 package cc.xuepeng.ray.framework.module.asset.api.converter;
 
 import cc.xuepeng.ray.framework.core.mybatis.converter.DtoConverter;
+import cc.xuepeng.ray.framework.module.asset.api.request.AssetStatusLogRequest;
 import cc.xuepeng.ray.framework.module.asset.api.response.AssetStatusLogResponse;
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetStatusLogDto;
 import org.mapstruct.Mapper;
@@ -13,6 +14,6 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AssetStatusLogDtoConverter
-        extends DtoConverter<Void, AssetStatusLogDto, AssetStatusLogResponse> {
+        extends DtoConverter<AssetStatusLogRequest, AssetStatusLogDto, AssetStatusLogResponse> {
 
 }

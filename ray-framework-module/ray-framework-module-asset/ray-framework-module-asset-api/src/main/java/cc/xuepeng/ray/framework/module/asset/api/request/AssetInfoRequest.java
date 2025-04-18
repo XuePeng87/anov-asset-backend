@@ -57,7 +57,6 @@ public class AssetInfoRequest extends BaseRequest implements RequestValidateScop
     /**
      * 状态：0=在库；1=使用；2=维修；3=报废
      */
-    @NotNull(message = "资产状态不能为空", groups = {create.class, update.class})
     private AssetStatus status;
 
     /**

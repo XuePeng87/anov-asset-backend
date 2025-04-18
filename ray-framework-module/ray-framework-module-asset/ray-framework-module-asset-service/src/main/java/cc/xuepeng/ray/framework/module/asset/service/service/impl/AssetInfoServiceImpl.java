@@ -8,6 +8,7 @@ import cc.xuepeng.ray.framework.module.asset.repository.entity.AssetInfo;
 import cc.xuepeng.ray.framework.module.asset.repository.enums.AssetStatus;
 import cc.xuepeng.ray.framework.module.asset.repository.repository.AssetInfoRepository;
 import cc.xuepeng.ray.framework.module.asset.service.converter.AssetInfoEntityConverter;
+import cc.xuepeng.ray.framework.module.asset.service.decorator.AssetInfoDtoDecorator;
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetInfoDto;
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetStatusLogDto;
 import cc.xuepeng.ray.framework.module.asset.service.exception.AssetInfoNotFoundException;
@@ -142,7 +143,9 @@ public class AssetInfoServiceImpl
         final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper(assetInfoDto);
         final Page<AssetInfo> page = PageUtil.createPage(assetInfoDto);
         final Page<AssetInfo> assetInfos = super.page(page, wrapper);
-        return assetInfoEntityConverter.entityPageToDtoPage(assetInfos);
+        return assetInfoDtoDecorator.decorate(
+                assetInfoEntityConverter.entityPageToDtoPage(assetInfos)
+        );
     }
 
     /**
@@ -209,5 +212,11 @@ public class AssetInfoServiceImpl
      */
     @Resource
     private AssetStatusLogService assetStatusLogService;
+
+    /**
+     * 资产信息装饰器
+     */
+    @Resource
+    private AssetInfoDtoDecorator assetInfoDtoDecorator;
 
 }

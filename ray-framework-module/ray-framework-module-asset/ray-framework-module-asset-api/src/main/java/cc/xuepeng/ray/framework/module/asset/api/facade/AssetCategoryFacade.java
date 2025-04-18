@@ -4,6 +4,8 @@ import cc.xuepeng.ray.framework.core.common.domain.response.PageResponse;
 import cc.xuepeng.ray.framework.module.asset.api.request.AssetCategoryRequest;
 import cc.xuepeng.ray.framework.module.asset.api.response.AssetCategoryResponse;
 
+import java.util.List;
+
 /**
  * 资产类别的业务处理门面接口
  *
@@ -29,12 +31,12 @@ public interface AssetCategoryFacade {
     boolean update(final String code, final AssetCategoryRequest assetCategoryRequest);
 
     /**
-     * 删除资产类别
+     * 根据编号删除资产分类
      *
-     * @param code 类别编号
+     * @param codes 资产分类的编号集合
      * @return 是否删除成功
      */
-    boolean delete(final String code);
+    boolean deleteByCodes(final List<String> codes);
 
     /**
      * 根据编号查询资产类别
@@ -51,5 +53,12 @@ public interface AssetCategoryFacade {
      * @return 资产类别的响应对象
      */
     PageResponse<AssetCategoryResponse> pageByCondition(final AssetCategoryRequest assetCategoryRequest);
+
+    /**
+     * 查询所有资产分类
+     *
+     * @return 资产分类的响应对象集合
+     */
+    List<AssetCategoryResponse> findAll();
 
 }

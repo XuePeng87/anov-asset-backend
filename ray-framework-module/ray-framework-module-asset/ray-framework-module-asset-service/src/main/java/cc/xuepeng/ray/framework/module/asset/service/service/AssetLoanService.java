@@ -18,24 +18,15 @@ public interface AssetLoanService {
      * @param assetLoanDto 资产借用的数据传输对象
      * @return 是否创建成功
      */
-    boolean create(AssetLoanDto assetLoanDto);
+    boolean loanAsset(AssetLoanDto assetLoanDto);
 
     /**
      * 归还资产
      *
-     * @param code   借用记录编号
-     * @param remark 备注
+     * @param assetLoanDto 资产借用的数据传输对象
      * @return 是否归还成功
      */
-    boolean returnAsset(String code, String remark);
-
-    /**
-     * 根据编号查询资产借用记录
-     *
-     * @param code 资产借用记录的编号
-     * @return 资产借用记录的数据传输对象
-     */
-    AssetLoanDto findByCode(String code);
+    boolean returnAsset(final AssetLoanDto assetLoanDto);
 
     /**
      * 根据资产编号查询借用记录

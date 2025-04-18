@@ -26,6 +26,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 资产分类的业务处理实现类
@@ -131,6 +133,21 @@ public class AssetCategoryServiceImpl
         wrapper.lambda().orderByAsc(AssetCategory::getSequence);
         final List<AssetCategory> assetCategories = super.list(wrapper);
         return assetCategoryEntityConverter.entityListToDtoList(assetCategories);
+    }
+
+    /**
+     * 查询所有资产分类并转换成Map结构
+     *
+     * @return 资产分类的数据传输对象Map
+     */
+    @Override
+    public Map<String, String> findAllToMap() {
+        final List<AssetCategoryDto> categories = this.findAll();
+        return categories.stream()
+                .collect(Collectors.toMap(
+                        AssetCategoryDto::getCode,
+                        AssetCategoryDto::getName,
+                        (existing, replacement) -> existing));
     }
 
     /**

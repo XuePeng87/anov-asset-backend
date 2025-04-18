@@ -4,6 +4,8 @@ import cc.xuepeng.ray.framework.core.common.domain.response.PageResponse;
 import cc.xuepeng.ray.framework.module.system.api.request.SysUserRequest;
 import cc.xuepeng.ray.framework.module.system.api.response.SysUserResponse;
 
+import java.util.List;
+
 /**
  * 系统用户的业务处理门面接口
  *
@@ -22,7 +24,7 @@ public interface SysUserFacade {
     /**
      * 修改系统用户
      *
-     * @param code         系统用户的编号
+     * @param code           系统用户的编号
      * @param sysUserRequest 系统用户的请求对象
      * @return 是否修改成功
      */
@@ -51,6 +53,13 @@ public interface SysUserFacade {
      * @return 系统用户的响应对象
      */
     PageResponse<SysUserResponse> pageByCondition(final SysUserRequest sysUserRequest);
+
+    /**
+     * 查询全部系统用户
+     *
+     * @return 系统用户的响应对象
+     */
+    List<SysUserResponse> findAll();
 
     /**
      * 根据编号重置密码

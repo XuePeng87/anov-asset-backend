@@ -25,10 +25,10 @@ public interface AssetRepairFacade {
      * 完成维修
      *
      * @param code   维修记录编号
-     * @param remark 备注
+     * @param result 维修结果
      * @return 是否完成维修
      */
-    boolean completeRepair(String code, String remark);
+    boolean completeRepair(String code, String result);
 
     /**
      * 根据编号查询资产维修记录

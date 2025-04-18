@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 系统用户的API接口
  *
@@ -50,7 +52,7 @@ public class SysUserController extends BaseController {
     /**
      * 修改系统用户
      *
-     * @param code         系统用户的编码
+     * @param code           系统用户的编码
      * @param sysUserRequest 系统用户的请求对象
      * @return 是否修改成功
      */
@@ -124,6 +126,14 @@ public class SysUserController extends BaseController {
     public Result<PageResponse<SysUserResponse>> pageByCondition(final SysUserRequest sysUserRequest) {
         final PageResponse<SysUserResponse> result = sysUserFacade.pageByCondition(sysUserRequest);
         return DefaultResultFactory.success("分页查询用户列表", result);
+    }
+
+    @GetMapping("/v1")
+    @SaCheckRole(value = {"ROLE_SUPER_ADMIN", "ROLE_SYSTEM_ADMIN"}, mode = SaMode.OR)
+    @OperateLog(module = "系统管理", func = "用户管理", remark = "查询所有用户",
+            action = SysOperateLogAction.QUERY, persistent = false)
+    public Result<List<SysUserResponse>> findAll() {
+        return DefaultResultFactory.success("查询所有用户", sysUserFacade.findAll());
     }
 
     /**

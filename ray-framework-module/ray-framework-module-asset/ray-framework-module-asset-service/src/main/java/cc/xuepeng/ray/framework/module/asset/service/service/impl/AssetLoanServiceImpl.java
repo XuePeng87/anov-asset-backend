@@ -11,11 +11,9 @@ import cc.xuepeng.ray.framework.module.asset.service.converter.AssetLoanEntityCo
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetInfoDto;
 import cc.xuepeng.ray.framework.module.asset.service.dto.AssetLoanDto;
 import cc.xuepeng.ray.framework.module.asset.service.exception.AssetCannotLoanException;
-import cc.xuepeng.ray.framework.module.asset.service.exception.AssetLoanNotFoundException;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetInfoService;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetLoanService;
 import cc.xuepeng.ray.framework.sdk.auth.annotation.CreateUser;
-import cc.xuepeng.ray.framework.sdk.auth.annotation.ModifyUser;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -47,16 +46,17 @@ public class AssetLoanServiceImpl
     @Override
     @CreateUser
     @Transactional(rollbackFor = Exception.class)
-    public boolean create(final AssetLoanDto assetLoanDto) {
+    public boolean loanAsset(final AssetLoanDto assetLoanDto) {
         // 检查资产状态是否为在库
         AssetInfoDto assetInfoDto = assetInfoService.findByCode(assetLoanDto.getAssetCode());
         if (assetInfoDto.getStatus() != AssetStatus.IN_STOCK) {
             throw new AssetCannotLoanException("只有在库状态的资产才能借用");
         }
         // 设置初始状态为借用中
+        assetLoanDto.setCode(RandomUtil.get32UUID());
+        assetLoanDto.setLoanDate(LocalDate.now());
         assetLoanDto.setStatus(AssetLoanStatus.LOANED);
         final AssetLoan assetLoan = assetLoanEntityConverter.dtoToEntity(assetLoanDto);
-        assetLoanDto.setCode(RandomUtil.get32UUID());
         // 更新资产状态为借用中
         assetInfoService.updateStatus(assetLoanDto.getAssetCode(), AssetStatus.IN_USE, "资产借用");
         return super.save(assetLoan);
@@ -65,45 +65,26 @@ public class AssetLoanServiceImpl
     /**
      * 归还资产
      *
-     * @param code   借用记录编号
-     * @param remark 备注
+     * @param assetLoanDto 资产借用的数据传输对象
      * @return 是否归还成功
      */
     @Override
-    @ModifyUser
+    @CreateUser
     @Transactional(rollbackFor = Exception.class)
-    public boolean returnAsset(final String code, final String remark) {
-        // 查询原始数据
-        final AssetLoan originalAssetLoan = this.getByCode(code);
-        if (ObjectUtils.isEmpty(originalAssetLoan)) {
-            throw new AssetLoanNotFoundException("无法根据编号[" + code + "]查询到借用记录");
+    public boolean returnAsset(final AssetLoanDto assetLoanDto) {
+        // 检查资产状态是否为在库
+        AssetInfoDto assetInfoDto = assetInfoService.findByCode(assetLoanDto.getAssetCode());
+        if (assetInfoDto.getStatus() != AssetStatus.IN_USE) {
+            throw new AssetCannotLoanException("只有使用状态的资产才能归还");
         }
-        // 更新借用记录状态
-        final AssetLoan assetLoan = new AssetLoan();
-        assetLoan.setStatus(AssetLoanStatus.RETURNED);
-        assetLoan.setRemark(remark);
-        final QueryWrapper<AssetLoan> wrapper = this.createQueryWrapper(code);
-        boolean result = super.update(assetLoan, wrapper);
-        // 更新资产状态为在库
-        if (result) {
-            assetInfoService.updateStatus(originalAssetLoan.getAssetCode(), AssetStatus.IN_STOCK, "资产归还");
-        }
-        return result;
-    }
-
-    /**
-     * 根据编号查询资产借用记录
-     *
-     * @param code 资产借用记录的编号
-     * @return 资产借用记录的数据传输对象
-     */
-    @Override
-    public AssetLoanDto findByCode(final String code) {
-        final AssetLoan assetLoan = this.getByCode(code);
-        if (ObjectUtils.isEmpty(assetLoan)) {
-            throw new AssetLoanNotFoundException("无法根据编号[" + code + "]查询到借用记录");
-        }
-        return assetLoanEntityConverter.entityToDto(assetLoan);
+        // 设置初始状态为借用中
+        assetLoanDto.setCode(RandomUtil.get32UUID());
+        assetLoanDto.setLoanDate(LocalDate.now());
+        assetLoanDto.setStatus(AssetLoanStatus.LOANED);
+        final AssetLoan assetLoan = assetLoanEntityConverter.dtoToEntity(assetLoanDto);
+        // 更新资产状态为借用中
+        assetInfoService.updateStatus(assetLoanDto.getAssetCode(), AssetStatus.IN_STOCK, "资产归还");
+        return super.save(assetLoan);
     }
 
     /**
@@ -135,35 +116,12 @@ public class AssetLoanServiceImpl
     }
 
     /**
-     * 根据编号获取资产借用记录实体
-     *
-     * @param code 借用记录编号
-     * @return 资产借用记录实体
-     */
-    private AssetLoan getByCode(final String code) {
-        final QueryWrapper<AssetLoan> wrapper = this.createQueryWrapper(code);
-        return super.getOne(wrapper);
-    }
-
-    /**
      * 创建QueryWrapper
      *
      * @return QueryWrapper对象
      */
     private QueryWrapper<AssetLoan> createQueryWrapper() {
         return QueryWrapperUtil.createQueryWrapper();
-    }
-
-    /**
-     * 创建QueryWrapper
-     *
-     * @param code 借用记录编号
-     * @return QueryWrapper对象
-     */
-    private QueryWrapper<AssetLoan> createQueryWrapper(final String code) {
-        final QueryWrapper<AssetLoan> wrapper = this.createQueryWrapper();
-        wrapper.lambda().eq(AssetLoan::getCode, code);
-        return wrapper;
     }
 
     /**

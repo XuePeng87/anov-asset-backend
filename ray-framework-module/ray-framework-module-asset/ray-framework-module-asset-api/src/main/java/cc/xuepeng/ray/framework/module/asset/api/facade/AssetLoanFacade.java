@@ -19,16 +19,15 @@ public interface AssetLoanFacade {
      * @param assetLoanRequest 资产借用的请求对象
      * @return 是否创建成功
      */
-    boolean create(AssetLoanRequest assetLoanRequest);
+    boolean loanAsset(AssetLoanRequest assetLoanRequest);
 
     /**
      * 归还资产
      *
-     * @param code   借用记录编号
-     * @param remark 备注
+     * @param assetLoanRequest 资产归还的请求对象
      * @return 是否归还成功
      */
-    boolean returnAsset(String code, String remark);
+    boolean returnAsset(AssetLoanRequest assetLoanRequest);
 
     /**
      * 根据编号查询资产借用记录
