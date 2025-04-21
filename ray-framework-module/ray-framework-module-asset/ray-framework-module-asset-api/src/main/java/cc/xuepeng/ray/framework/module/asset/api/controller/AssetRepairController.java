@@ -53,7 +53,7 @@ public class AssetRepairController extends BaseController {
      * 完成维修
      *
      * @param code   维修记录编号
-     * @param remark 备注
+     * @param result 维修结果
      * @return 是否完成维修成功
      */
     @PutMapping("/v1/{code}/complete")
@@ -61,25 +61,10 @@ public class AssetRepairController extends BaseController {
     @OperateLog(module = "资产管理", func = "资产维修", remark = "完成维修", action = SysOperateLogAction.UPDATE)
     public Result<Boolean> completeRepair(
             @PathVariable(value = "code") final String code,
-            @RequestParam(value = "remark", required = false) final String remark) {
-        return assetRepairFacade.completeRepair(code, remark) ?
+            @RequestParam(value = "remark", required = false) final String result) {
+        return assetRepairFacade.completeRepair(code, result) ?
                 DefaultResultFactory.success("完成维修成功", Boolean.TRUE) :
                 DefaultResultFactory.fail("完成维修失败", Boolean.FALSE);
-    }
-
-    /**
-     * 根据编号查询资产维修记录
-     *
-     * @param code 资产维修记录编号
-     * @return 资产维修记录的响应对象
-     */
-    @GetMapping("/v1/{code}")
-    @SaCheckRole(value = {"ROLE_SUPER_ADMIN", "ROLE_SYSTEM_ADMIN"}, mode = SaMode.OR)
-    @OperateLog(module = "资产管理", func = "资产维修", remark = "查询维修",
-            action = SysOperateLogAction.QUERY, persistent = false)
-    public Result<AssetRepairResponse> findByCode(@PathVariable(value = "code") final String code) {
-        final AssetRepairResponse result = assetRepairFacade.findByCode(code);
-        return DefaultResultFactory.success("查询资产维修记录成功", result);
     }
 
     /**

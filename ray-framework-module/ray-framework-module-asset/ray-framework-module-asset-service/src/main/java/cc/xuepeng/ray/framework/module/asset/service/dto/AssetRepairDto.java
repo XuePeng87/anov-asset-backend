@@ -47,7 +47,7 @@ public class AssetRepairDto extends BaseDto {
     /**
      * 问题描述
      */
-    private String faultCause;
+    private String reason;
 
     /**
      * 状态：0=待维修；1=维修中；2=已完成

@@ -52,9 +52,9 @@ public class AssetRepair extends BizEntity {
 
     /**
      * 问题描述
-     * 数据库字段：fault_cause，varchar(512)
+     * 数据库字段：reason，varchar(512)
      */
-    private String faultCause;
+    private String reason;
 
     /**
      * 状态：0=待维修；1=维修中；2=已完成

@@ -18,11 +18,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum AssetRepairStatus implements BaseEnum {
 
-    PENDING(0, "待维修"),
+    REPAIRING(0, "维修中"),
 
-    REPAIRING(1, "维修中"),
-
-    COMPLETED(2, "已完成");
+    COMPLETED(1, "已完成");
 
     /**
      * 查找枚举

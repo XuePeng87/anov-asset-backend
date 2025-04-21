@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
+
 /**
  * 资产维修的请求参数类
  *
@@ -30,15 +32,21 @@ public class AssetRepairRequest extends BaseRequest implements RequestValidateSc
     /**
      * 维修原因
      */
+    @NotBlank(message = "维修公司不能为空", groups = {create.class, update.class})
+    @Length(max = 128, message = "维修公司长度不能大于128个字符", groups = {create.class, update.class, page.class})
+    private String company;
+
+    /**
+     * 维修费用
+     */
+    private BigDecimal cost;
+
+    /**
+     * 维修原因
+     */
     @NotBlank(message = "维修原因不能为空", groups = {create.class, update.class})
     @Length(max = 256, message = "维修原因长度不能大于256个字符", groups = {create.class, update.class, page.class})
     private String reason;
-
-    /**
-     * 状态：0=通过；1=驳回
-     */
-    @NotNull(message = "维修状态不能为空", groups = {create.class, update.class})
-    private AssetRepairStatus status;
 
     /**
      * 备注

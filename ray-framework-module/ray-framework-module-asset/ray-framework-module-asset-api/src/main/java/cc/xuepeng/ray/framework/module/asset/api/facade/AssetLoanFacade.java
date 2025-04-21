@@ -30,14 +30,6 @@ public interface AssetLoanFacade {
     boolean returnAsset(AssetLoanRequest assetLoanRequest);
 
     /**
-     * 根据编号查询资产借用记录
-     *
-     * @param code 资产借用记录的编号
-     * @return 资产借用记录的响应对象
-     */
-    AssetLoanResponse findByCode(String code);
-
-    /**
      * 根据资产编号查询借用记录
      *
      * @param assetCode 资产编号

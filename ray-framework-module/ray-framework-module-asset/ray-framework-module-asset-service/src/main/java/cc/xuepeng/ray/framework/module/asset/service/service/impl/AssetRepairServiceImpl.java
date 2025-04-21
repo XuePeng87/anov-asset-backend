@@ -1,5 +1,6 @@
 package cc.xuepeng.ray.framework.module.asset.service.service.impl;
 
+import cc.xuepeng.ray.framework.core.common.util.RandomUtil;
 import cc.xuepeng.ray.framework.core.mybatis.util.PageUtil;
 import cc.xuepeng.ray.framework.core.mybatis.util.QueryWrapperUtil;
 import cc.xuepeng.ray.framework.module.asset.repository.entity.AssetRepair;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -52,9 +54,10 @@ public class AssetRepairServiceImpl
         if (assetInfoDto.getStatus() != AssetStatus.IN_STOCK) {
             throw new AssetCannotRepairException("只有在库状态的资产才能维修");
         }
-
+        assetRepairDto.setCode(RandomUtil.get32UUID());
         // 设置初始状态为维修中
         assetRepairDto.setStatus(AssetRepairStatus.REPAIRING);
+        assetRepairDto.setStartDate(LocalDate.now());
         final AssetRepair assetRepair = assetRepairEntityConverter.dtoToEntity(assetRepairDto);
         // 更新资产状态为维修中
         assetInfoService.updateStatus(assetRepairDto.getAssetCode(), AssetStatus.UNDER_REPAIR, "资产维修");
@@ -80,6 +83,7 @@ public class AssetRepairServiceImpl
         // 更新维修记录状态
         final AssetRepair assetRepair = new AssetRepair();
         assetRepair.setStatus(AssetRepairStatus.COMPLETED);
+        assetRepair.setEndDate(LocalDate.now());
         assetRepair.setResult(result);
         final QueryWrapper<AssetRepair> wrapper = this.createQueryWrapper(code);
         boolean ret = super.update(assetRepair, wrapper);

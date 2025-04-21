@@ -47,18 +47,6 @@ public class AssetLoanFacadeImpl implements AssetLoanFacade {
     }
 
     /**
-     * 根据编号查询资产借用记录
-     *
-     * @param code 资产借用记录的编号
-     * @return 资产借用记录的响应对象
-     */
-    @Override
-    public AssetLoanResponse findByCode(String code) {
-        final AssetLoanDto assetLoanDto = assetLoanService.findByCode(code);
-        return assetLoanDtoConverter.dtoToResponse(assetLoanDto);
-    }
-
-    /**
      * 根据资产编号查询借用记录
      *
      * @param assetCode 资产编号

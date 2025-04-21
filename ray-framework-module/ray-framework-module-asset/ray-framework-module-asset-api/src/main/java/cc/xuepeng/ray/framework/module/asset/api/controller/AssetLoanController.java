@@ -67,21 +67,6 @@ public class AssetLoanController extends BaseController {
     }
 
     /**
-     * 根据编号查询资产借用记录
-     *
-     * @param code 资产借用记录编号
-     * @return 资产借用记录的响应对象
-     */
-    @GetMapping("/v1/{code}")
-    @SaCheckRole(value = {"ROLE_SUPER_ADMIN", "ROLE_SYSTEM_ADMIN"}, mode = SaMode.OR)
-    @OperateLog(module = "资产管理", func = "资产借用", remark = "查询借用",
-            action = SysOperateLogAction.QUERY, persistent = false)
-    public Result<AssetLoanResponse> findByCode(@PathVariable(value = "code") final String code) {
-        final AssetLoanResponse result = assetLoanFacade.findByCode(code);
-        return DefaultResultFactory.success("查询资产借用记录成功", result);
-    }
-
-    /**
      * 根据资产编号查询借用记录
      *
      * @param assetCode 资产编号
