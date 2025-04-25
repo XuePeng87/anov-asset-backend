@@ -14,7 +14,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://127.0.0.1:3306/anov-assets?useUnicode=true&characterEncoding=UTF-8&relaxAutoCommit=true&serverTimezone=GMT%2B8&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: Snow103082..
+    password: root
     hikari:
       auto-commit: true #此属性控制从池返回的连接的默认自动提交行为，默认值：true
       pool-name: ConsoleRdsPool
@@ -28,7 +28,7 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
-      password: 'Anov@2022'
+      password: 'root'
       lettuce:
         pool:
           max-active: 10
