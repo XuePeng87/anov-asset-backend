@@ -58,7 +58,11 @@ public class AssetLoanServiceImpl
         assetLoanDto.setStatus(AssetLoanStatus.LOANED);
         final AssetLoan assetLoan = assetLoanEntityConverter.dtoToEntity(assetLoanDto);
         // 更新资产状态为借用中
-        assetInfoService.updateStatus(assetLoanDto.getAssetCode(), AssetStatus.IN_USE, "资产借用");
+        assetInfoService.updateStatus(
+                assetLoanDto.getAssetCode(),
+                assetLoanDto.getUserCode(),
+                AssetStatus.IN_USE,
+                "资产借用");
         return super.save(assetLoan);
     }
 
@@ -83,7 +87,7 @@ public class AssetLoanServiceImpl
         assetLoanDto.setStatus(AssetLoanStatus.LOANED);
         final AssetLoan assetLoan = assetLoanEntityConverter.dtoToEntity(assetLoanDto);
         // 更新资产状态为借用中
-        assetInfoService.updateStatus(assetLoanDto.getAssetCode(), AssetStatus.IN_STOCK, "资产归还");
+        assetInfoService.updateStatus(assetLoanDto.getAssetCode(), StringUtils.EMPTY, AssetStatus.IN_STOCK, "资产归还");
         return super.save(assetLoan);
     }
 

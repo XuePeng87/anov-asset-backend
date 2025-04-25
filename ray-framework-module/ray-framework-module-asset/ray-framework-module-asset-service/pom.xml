@@ -28,6 +28,11 @@
         </dependency>
         <dependency>
             <groupId>cc.xuepeng</groupId>
+            <artifactId>ray-framework-module-system-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cc.xuepeng</groupId>
             <artifactId>ray-framework-sdk-auth</artifactId>
             <version>${project.version}</version>
         </dependency>

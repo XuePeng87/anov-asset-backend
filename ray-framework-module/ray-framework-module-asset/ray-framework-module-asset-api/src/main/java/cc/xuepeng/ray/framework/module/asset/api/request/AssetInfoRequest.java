@@ -30,6 +30,11 @@ public class AssetInfoRequest extends BaseRequest implements RequestValidateScop
     private String categoryCode;
 
     /**
+     * 使用人编号
+     */
+    private String userCode;
+
+    /**
      * 名称
      */
     @NotBlank(message = "资产名称不能为空", groups = {create.class, update.class})

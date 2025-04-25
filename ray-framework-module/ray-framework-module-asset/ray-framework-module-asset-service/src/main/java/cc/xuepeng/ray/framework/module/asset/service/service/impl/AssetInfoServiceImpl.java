@@ -14,6 +14,8 @@ import cc.xuepeng.ray.framework.module.asset.service.dto.AssetStatusLogDto;
 import cc.xuepeng.ray.framework.module.asset.service.exception.AssetInfoNotFoundException;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetInfoService;
 import cc.xuepeng.ray.framework.module.asset.service.service.AssetStatusLogService;
+import cc.xuepeng.ray.framework.module.system.service.dto.SysUserDto;
+import cc.xuepeng.ray.framework.module.system.service.service.SysUserService;
 import cc.xuepeng.ray.framework.sdk.auth.annotation.CreateUser;
 import cc.xuepeng.ray.framework.sdk.auth.annotation.ModifyUser;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -25,6 +27,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 资产信息的业务处理实现类
@@ -86,15 +90,15 @@ public class AssetInfoServiceImpl
     /**
      * 更新资产状态
      *
-     * @param code   资产编号
-     * @param status 资产状态
-     * @param remark 备注
-     * @return 是否修改成功
+     * @param code     资产编号
+     * @param userCode 用户编号
+     * @param status   资产状态
+     * @param remark   备注
      */
     @Override
     @ModifyUser
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateStatus(final String code, final AssetStatus status, final String remark) {
+    public void updateStatus(final String code, final String userCode, final AssetStatus status, final String remark) {
         // 查询原始数据
         final AssetInfo originalAssetInfo = this.getByCode(code);
         if (ObjectUtils.isEmpty(originalAssetInfo)) {
@@ -102,7 +106,7 @@ public class AssetInfoServiceImpl
         }
         // 如果状态未发生变化，则不需要更新
         if (status.equals(originalAssetInfo.getStatus())) {
-            return true;
+            return;
         }
         // 记录状态变更日志
         final AssetStatusLogDto assetStatusLogDto = new AssetStatusLogDto();
@@ -112,9 +116,10 @@ public class AssetInfoServiceImpl
         assetStatusLogService.create(assetStatusLogDto);
         // 更新资产状态
         final AssetInfo assetInfo = new AssetInfo();
+        assetInfo.setUserCode(userCode);
         assetInfo.setStatus(status);
         final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper(code);
-        return super.update(assetInfo, wrapper);
+        super.update(assetInfo, wrapper);
     }
 
     /**
@@ -143,8 +148,10 @@ public class AssetInfoServiceImpl
         final QueryWrapper<AssetInfo> wrapper = this.createQueryWrapper(assetInfoDto);
         final Page<AssetInfo> page = PageUtil.createPage(assetInfoDto);
         final Page<AssetInfo> assetInfos = super.page(page, wrapper);
-        return assetInfoDtoDecorator.decorate(
-                assetInfoEntityConverter.entityPageToDtoPage(assetInfos)
+        return assetInfoDtoDecorator.decorateCategory(
+                assetInfoDtoDecorator.decorateUser(
+                        assetInfoEntityConverter.entityPageToDtoPage(assetInfos)
+                )
         );
     }
 
@@ -189,15 +196,16 @@ public class AssetInfoServiceImpl
         final QueryWrapper<AssetInfo> wrapper = QueryWrapperUtil.createQueryWrapper(assetInfoDto);
         final AssetInfo assetInfo = assetInfoEntityConverter.dtoToEntity(assetInfoDto);
         final LambdaQueryWrapper<AssetInfo> lambda = wrapper.lambda();
-
         // 增加条件查询
+        lambda.eq(StringUtils.isNotBlank(assetInfo.getCategoryCode()), AssetInfo::getCategoryCode, assetInfo.getCategoryCode());
+        lambda.eq(ObjectUtils.isNotEmpty(assetInfo.getStatus()), AssetInfo::getStatus, assetInfo.getStatus());
+        lambda.eq(StringUtils.isNotBlank(assetInfo.getUserCode()), AssetInfo::getUserCode, assetInfo.getUserCode());
+        lambda.eq(StringUtils.isNotBlank(assetInfo.getPurchaseYear()), AssetInfo::getPurchaseYear, assetInfo.getPurchaseYear());
         lambda.like(StringUtils.isNotBlank(assetInfo.getName()), AssetInfo::getName, assetInfo.getName());
         lambda.like(StringUtils.isNotBlank(assetInfo.getBrand()), AssetInfo::getBrand, assetInfo.getBrand());
         lambda.like(StringUtils.isNotBlank(assetInfo.getModel()), AssetInfo::getModel, assetInfo.getModel());
-        lambda.eq(StringUtils.isNotBlank(assetInfo.getCategoryCode()), AssetInfo::getCategoryCode, assetInfo.getCategoryCode());
-        lambda.eq(ObjectUtils.isNotEmpty(assetInfo.getStatus()), AssetInfo::getStatus, assetInfo.getStatus());
         // 默认按编号排序
-        lambda.orderByAsc(AssetInfo::getCode);
+        lambda.orderByAsc(AssetInfo::getCreateTime);
         return wrapper;
     }
 
@@ -218,5 +226,11 @@ public class AssetInfoServiceImpl
      */
     @Resource
     private AssetInfoDtoDecorator assetInfoDtoDecorator;
+
+    /**
+     * 系统用户的业务处理接口
+     */
+    @Resource
+    private SysUserService sysUserService;
 
 }

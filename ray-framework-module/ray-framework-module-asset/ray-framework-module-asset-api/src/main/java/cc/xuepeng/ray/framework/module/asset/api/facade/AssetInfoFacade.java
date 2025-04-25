@@ -30,16 +30,6 @@ public interface AssetInfoFacade {
     boolean update(final String code, final AssetInfoRequest assetInfoRequest);
 
     /**
-     * 更新资产状态
-     *
-     * @param code   资产编号
-     * @param status 资产状态
-     * @param remark 备注
-     * @return 是否修改成功
-     */
-    boolean updateStatus(final String code, final AssetStatus status, final String remark);
-
-    /**
      * 根据编号查询资产信息
      *
      * @param code 资产信息的编号

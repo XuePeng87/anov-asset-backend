@@ -47,19 +47,6 @@ public class AssetInfoFacadeImpl implements AssetInfoFacade {
     }
 
     /**
-     * 更新资产状态
-     *
-     * @param code   资产编号
-     * @param status 资产状态
-     * @param remark 备注
-     * @return 是否修改成功
-     */
-    @Override
-    public boolean updateStatus(final String code, final AssetStatus status, final String remark) {
-        return assetInfoService.updateStatus(code, status, remark);
-    }
-
-    /**
      * 根据编号查询资产信息
      *
      * @param code 资产信息的编号

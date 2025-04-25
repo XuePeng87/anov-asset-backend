@@ -67,26 +67,6 @@ public class AssetInfoController extends BaseController {
     }
 
     /**
-     * 更新资产状态
-     *
-     * @param code   资产编号
-     * @param status 资产状态
-     * @param remark 备注
-     * @return 是否修改成功
-     */
-    @PutMapping("/v1/{code}/status")
-    @SaCheckRole(value = {"ROLE_SUPER_ADMIN", "ROLE_SYSTEM_ADMIN"}, mode = SaMode.OR)
-    @OperateLog(module = "资产管理", func = "资产信息", remark = "更新状态", action = SysOperateLogAction.UPDATE)
-    public Result<Boolean> updateStatus(
-            @PathVariable(value = "code") final String code,
-            @RequestParam(value = "status") final AssetStatus status,
-            @RequestParam(value = "remark", required = false) final String remark) {
-        return assetInfoFacade.updateStatus(code, status, remark) ?
-                DefaultResultFactory.success("更新资产状态成功", Boolean.TRUE) :
-                DefaultResultFactory.fail("更新资产状态失败", Boolean.FALSE);
-    }
-
-    /**
      * 根据编号查询资产信息
      *
      * @param code 资产编号

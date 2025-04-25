@@ -24,6 +24,12 @@ public class AssetInfo extends BizEntity {
     private String categoryCode;
 
     /**
+     * 使用人编号
+     * 数据库字段：user_code, varchar(32)
+     */
+    private String userCode;
+
+    /**
      * 编号
      * 数据库字段：code，char(32)
      */

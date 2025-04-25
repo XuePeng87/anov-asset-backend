@@ -29,6 +29,16 @@ public class AssetInfoResponse extends BaseResponse {
     private String categoryName;
 
     /**
+     * 使用人编号
+     */
+    private String userCode;
+
+    /**
+     * 使用人姓名
+     */
+    private String userName;
+
+    /**
      * 编号
      */
     private String code;

@@ -1,10 +1,8 @@
 package cc.xuepeng.ray.framework.module.asset.service.service;
 
-import cc.xuepeng.ray.framework.module.asset.service.dto.AssetInfoDto;
 import cc.xuepeng.ray.framework.module.asset.repository.enums.AssetStatus;
+import cc.xuepeng.ray.framework.module.asset.service.dto.AssetInfoDto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import java.util.List;
 
 /**
  * 资产信息的业务处理接口
@@ -32,12 +30,12 @@ public interface AssetInfoService {
     /**
      * 更新资产状态
      *
-     * @param code   资产编号
-     * @param status 资产状态
-     * @param remark 备注
-     * @return 是否修改成功
+     * @param code     资产编号
+     * @param userCode 用户编号
+     * @param status   资产状态
+     * @param remark   备注
      */
-    boolean updateStatus(final String code, final AssetStatus status, final String remark);
+    void updateStatus(final String code, final String userCode, final AssetStatus status, final String remark);
 
     /**
      * 根据编号查询资产信息

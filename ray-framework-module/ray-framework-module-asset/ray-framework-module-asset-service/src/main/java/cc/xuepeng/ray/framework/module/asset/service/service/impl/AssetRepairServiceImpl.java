@@ -60,7 +60,7 @@ public class AssetRepairServiceImpl
         assetRepairDto.setStartDate(LocalDate.now());
         final AssetRepair assetRepair = assetRepairEntityConverter.dtoToEntity(assetRepairDto);
         // 更新资产状态为维修中
-        assetInfoService.updateStatus(assetRepairDto.getAssetCode(), AssetStatus.UNDER_REPAIR, "资产维修");
+        assetInfoService.updateStatus(assetRepairDto.getAssetCode(), StringUtils.EMPTY, AssetStatus.UNDER_REPAIR, "资产维修");
         return super.save(assetRepair);
     }
 
@@ -89,7 +89,7 @@ public class AssetRepairServiceImpl
         boolean ret = super.update(assetRepair, wrapper);
         // 更新资产状态为在库
         if (ret) {
-            assetInfoService.updateStatus(originalAssetRepair.getAssetCode(), AssetStatus.IN_STOCK, "维修完成");
+            assetInfoService.updateStatus(originalAssetRepair.getAssetCode(), StringUtils.EMPTY, AssetStatus.IN_STOCK, "维修完成");
         }
         return ret;
     }

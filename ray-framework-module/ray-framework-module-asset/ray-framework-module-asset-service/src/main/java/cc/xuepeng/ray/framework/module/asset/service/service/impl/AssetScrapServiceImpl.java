@@ -57,7 +57,7 @@ public class AssetScrapServiceImpl
         final AssetScrap assetScrap = assetScrapEntityConverter.dtoToEntity(assetScrapDto);
         boolean result = super.save(assetScrap);
         if (result) {
-            assetInfoService.updateStatus(assetScrap.getAssetCode(), AssetStatus.SCRAPPED, "资产报废");
+            assetInfoService.updateStatus(assetScrap.getAssetCode(), StringUtils.EMPTY, AssetStatus.SCRAPPED, "资产报废");
         }
         return result;
     }
@@ -86,7 +86,7 @@ public class AssetScrapServiceImpl
         boolean result = super.update(assetScrap, wrapper);
         // 更新资产状态为正常
         if (result) {
-            assetInfoService.updateStatus(originalAssetScrap.getAssetCode(), AssetStatus.IN_USE, "取消报废");
+            assetInfoService.updateStatus(originalAssetScrap.getAssetCode(), StringUtils.EMPTY, AssetStatus.IN_USE, "取消报废");
         }
         return result;
     }
